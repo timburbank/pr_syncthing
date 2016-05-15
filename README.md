@@ -5,7 +5,7 @@
 r.status_code should = 200
 r.json()
 
-folders = list of:
+folders = list of dictionaries of:
 u'pullers'
 u'hashers'
 u'scanProgressIntervalS'
@@ -66,6 +66,7 @@ u'versioning'
 
 
 We want to: 
+Version 0, works just with local syncthing
 Run script locally on each machine
 
 * ask for project directory
@@ -74,17 +75,19 @@ Run script locally on each machine
 
 * Get config from server
 
-get available device names
+* get available device names
 
-ask for device names to share (comma separated)
+* ask for device names to share (comma separated)
 
-create a library for the new folder
+* create a library for the new folder
 
-append the library to the folders list
+* append the library to the folders list
 
-POST to localhost
+* create folder if it doesn't exist
 
-- Some machines will be https and require an API key. we can specify these with parameters (https will redirect, we don't need to worry about it)
+* POST to localhost
+
+Note: apparently POSTing doesn't work without the api key
 
 
 <https://docs.syncthing.net/dev/rest.html>
@@ -93,4 +96,20 @@ POST to localhost
 
 <http://docs.python-requests.org/en/master/user/quickstart/>
 
+## pr_init
+
+more comprehensive version of script, would include
+- syncthing
+- owncloud
+- git/hg
+
+Run locally on each workstation, providing relative or absolute directory
+
+When creating a project:
+- add project directory to nimloth if doesn't exist (ask version control if need be)
+- clone project directory from nimloth
+- add syncthing folders if they don't exist
+- if they do, add current machine to nimloth, and share with other machines
+- add out/ to owncloud if it doesn't exist
+- sync out/ with owncloud
 
