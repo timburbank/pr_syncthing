@@ -81,24 +81,29 @@ def add_project(args):
 
 	# create folder (project directory needs to already exist)
 	# if we want it to not have to <http://stackoverflow.com/a/18503387>
-	filepath = os.path.join(folder, 'src')
-	if not os.path.exists(filepath):
-		os.mkdir(filepath)
 	
-	new_folder = generic_folder.copy()
-	new_folder['path'] = filepath
-	new_folder['id'] = '{}-src'.format(project_name)
+	directorys = ['in', 'out', 'rnd']
 	
-	shared_devices = []
-	# get device IDs
-	for device_name in devices:
-		for avail_device in syncthing['devices']:
-			if avail_device['name'] == device_name:
-				shared_devices.append({'deviceID': avail_device['deviceID']})
+	for directory in directorys:
+	
+		filepath = os.path.join(folder, directory)
+		if not os.path.exists(filepath):
+			os.mkdir(filepath)
+	
+		new_folder = generic_folder.copy()
+		new_folder['path'] = filepath
+		new_folder['id'] = '{}-{}'.format(project_name, directory)
+	
+		shared_devices = []
+		# get device IDs
+		for device_name in devices:
+			for avail_device in syncthing['devices']:
+				if avail_device['name'] == device_name:
+					shared_devices.append({'deviceID': avail_device['deviceID']})
 				
-	new_folder['devices'] = shared_devices
-	
-	syncthing['folders'].append(new_folder)
+		new_folder['devices'] = shared_devices
+
+		syncthing['folders'].append(new_folder)
 	
 		
 	# send new config to syncthing
