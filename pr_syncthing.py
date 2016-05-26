@@ -33,7 +33,7 @@ def add_project(args):
 			"http://{}/rest/system/config".format(args.url), \
 			verify=False, \
 			headers={'X-API-Key': args.apikey})
-	
+	print(request_data)
 	syncthing = request_data.json()
 
 	# ask for any parameters that weren't given
