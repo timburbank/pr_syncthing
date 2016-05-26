@@ -41,6 +41,7 @@ def add_project(args):
 		folder = input("project directory: ")
 	else:
 		folder = args.folder
+	folder = folder.strip()
 
 	project_name = folder.split('/')[-1].strip()
 	
