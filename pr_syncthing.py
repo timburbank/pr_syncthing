@@ -50,7 +50,7 @@ def add_project(args):
 		devices_display = ''
 		for device in syncthing['devices']:
 			devices_display = "{}, {}".format(devices_display, device['name'])
-		print devices_display.strip(', ')
+		print(devices_display.strip(', '))
 		devices_input = input("devices: ").split(',')
 		# Assuming device names don't start or end with whitespace
 		# If device names do start or end with whitespace then fuck you
@@ -121,8 +121,8 @@ def add_project(args):
 			headers={'X-API-Key': args.apikey}, \
 			data = json.dumps(syncthing))
 		
-	print response
-	print response.text
+	print(response)
+	print(response.text)
 	
 	
 	
