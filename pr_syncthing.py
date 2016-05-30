@@ -38,7 +38,7 @@ def add_project(args):
 
 	# ask for any parameters that weren't given
 	if args.folder is None:
-		folder = input("project directory: ")
+		folder = os.getcwd()
 	else:
 		folder = args.folder
 	folder = folder.strip()
