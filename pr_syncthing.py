@@ -8,7 +8,6 @@ def terminal_input(prompt=''):
 	from sys import version_info
 
 	py3 = version_info[0] > 2
-	print(py3)
 	if py3:
 		content = input(prompt)
 	else:
@@ -43,8 +42,7 @@ def add_project(args):
 	else:
 		folder = args.folder
 	folder = folder.strip()
-
-	project_name = folder.split('/')[-1].strip()
+	project_name = folder #os.path.basename(folder)
 	
 	if args.devices is None:
 		print("Enter devices to share with (comma separated)")
@@ -95,6 +93,7 @@ def add_project(args):
 		new_folder = generic_folder.copy()
 		new_folder['path'] = filepath
 		new_folder['id'] = '{}-{}'.format(project_name, directory)
+		print(new_folder['id'])
 	
 		shared_devices = []
 		# get device IDs
@@ -109,7 +108,7 @@ def add_project(args):
 	
 		
 	# send new config to syncthing
-	
+	print("send new config to syncthing")
 	# TODO: remove option to not have api key, cause I don't think it works
 	if args.apikey is None:
 		 response = requests.post( \
