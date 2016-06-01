@@ -4,10 +4,11 @@ import requests
 import os
 import json
 
-def input(prompt=''):
+def terminal_input(prompt=''):
 	from sys import version_info
 
 	py3 = version_info[0] > 2
+	print(py3)
 	if py3:
 		content = input(prompt)
 	else:
@@ -51,7 +52,7 @@ def add_project(args):
 		for device in syncthing['devices']:
 			devices_display = "{}, {}".format(devices_display, device['name'])
 		print(devices_display.strip(', '))
-		devices_input = input("devices: ").split(',')
+		devices_input = terminal_input("devices: ").split(',')
 		# Assuming device names don't start or end with whitespace
 		# If device names do start or end with whitespace then fuck you
 		devices = [device_name.strip() for device_name in devices_input]
