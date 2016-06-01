@@ -42,7 +42,7 @@ def add_project(args):
 	else:
 		folder = args.folder
 	folder = folder.strip()
-	project_name = folder #os.path.basename(folder)
+	project_name = os.path.basename(folder)
 	
 	if args.devices is None:
 		print("Enter devices to share with (comma separated)")
