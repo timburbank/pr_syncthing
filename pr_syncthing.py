@@ -4,6 +4,15 @@ import requests
 import os
 import json
 
+# awkward system to get config parser for python 2 or 3
+from sys import version_info
+py3 = version_info[0] > 2
+if py3:
+	import configparser
+else:
+	import ConfigParser as configparser 
+
+	
 def terminal_input(prompt=''):
 	from sys import version_info
 
@@ -24,15 +33,41 @@ def terminal_input(prompt=''):
 # devices, list of device names
 def add_project(args):
 
-	# get config data
-	if args.apikey is None:
-		 request_data = requests.get( \
-			"http://{}/rest/system/config".format(args.url))
+	# get url and api key, either from command line, config, or ask
+	config_file = os.path.join(os.path.dirname(os.path.realpath(__file__)),'config.ini')
+	
+	if args.url is not None:
+		url = args.url
+	elif os.path.isfile(config_file):
+		try:
+			parser = configparser.SafeConfigParser()
+			parser.read(config_file)
+		except configparser.ParsingError as err:
+			print('Config file exists but could not parse:' + err)
+			url = terminal_input('url: ')
+		url = parser.get('connection', 'url')
 	else:
-		request_data = requests.get( \
-			"http://{}/rest/system/config".format(args.url), \
-			verify=False, \
-			headers={'X-API-Key': args.apikey})
+		url = terminal_input('url: ')
+		
+	if args.apikey is not None:
+		api_key = args.apikey
+	elif os.path.isfile(config_file):
+		try:
+			parser = configparser.SafeConfigParser()
+			parser.read(config_file)
+		except configparser.ParsingError as err:
+			print('Config file exists but could not parse:' + err)
+			api_key = terminal_input('api key: ')
+		api_key = parser.get('connection', 'api_key')
+	else:
+		api_key = terminal_input('api key: ')
+
+		
+	# get config data
+	request_data = requests.get( \
+		"http://{}/rest/system/config".format(url), \
+		verify=False, \
+		headers={'X-API-Key': api_key})
 	print(request_data)
 	syncthing = request_data.json()
 
@@ -110,17 +145,12 @@ def add_project(args):
 	# send new config to syncthing
 	print("send new config to syncthing")
 	# TODO: remove option to not have api key, cause I don't think it works
-	if args.apikey is None:
-		 response = requests.post( \
-			"http://{}/rest/system/config".format(args.url), 
-			data = json.dumps(syncthing))
-	else:
-		response = requests.post( \
-			"http://{}/rest/system/config".format(args.url), \
-			verify=False, \
-			headers={'X-API-Key': args.apikey}, \
-			data = json.dumps(syncthing))
-		
+	response = requests.post( \
+		"http://{}/rest/system/config".format(url), \
+		verify=False, \
+		headers={'X-API-Key': api_key}, \
+		data = json.dumps(syncthing))
+
 	print(response)
 	print(response.text)
 	
@@ -136,8 +166,8 @@ if __name__ == "__main__":
 	add_p = subparsers.add_parser('add')
 	add_p.add_argument('-f', '--folder')
 	add_p.add_argument('-d', '--devices', nargs='+')
-	add_p.add_argument('-k', '--apikey')
-	add_p.add_argument('-u', '--url', default='localhost:8384', nargs='?') 
+	add_p.add_argument('-k', '--apikey', nargs='?')
+	add_p.add_argument('-u', '--url', nargs='?') 
 	add_p.set_defaults(func=add_project)
 
 	args = parser.parse_args()
