@@ -23,7 +23,17 @@ def terminal_input(prompt=''):
 		content = raw_input(prompt)
 	return(content)
 
-
+# Read config file
+def get_config(section, option):
+	# TODO: Handles specific exceptions, so we can tell the difference
+	#       between incorrect config file and no config file
+	config_file = os.path.join(os.path.dirname(os.path.realpath(__file__)),'config.ini')
+	
+	parser = configparser.SafeConfigParser()
+	parser.read(config_file)	
+	result = parser.get(section, option)
+	
+	return(result)
 
 # Adds in, out, and rnd directories for the project to syncthing
 # and shares them with the specified devices
@@ -38,31 +48,20 @@ def add_project(args):
 	
 	if args.url is not None:
 		url = args.url
-	elif os.path.isfile(config_file):
-		try:
-			parser = configparser.SafeConfigParser()
-			parser.read(config_file)
-		except configparser.ParsingError as err:
-			print('Config file exists but could not parse:' + err)
-			url = terminal_input('url: ')
-		url = parser.get('connection', 'url')
 	else:
-		url = terminal_input('url: ')
+		try:
+			url = get_config('connection', 'url')
+		except:
+			url = terminal_input('url: ')
 		
 	if args.apikey is not None:
 		api_key = args.apikey
-	elif os.path.isfile(config_file):
-		try:
-			parser = configparser.SafeConfigParser()
-			parser.read(config_file)
-		except configparser.ParsingError as err:
-			print('Config file exists but could not parse:' + err)
-			api_key = terminal_input('api key: ')
-		api_key = parser.get('connection', 'api_key')
 	else:
-		api_key = terminal_input('api key: ')
+		try:
+			api_key = get_config('connection', 'api_key')
+		except:
+			api_key = terminal_input('api key: ')
 
-		
 	# get config data
 	request_data = requests.get( \
 		"http://{}/rest/system/config".format(url), \
