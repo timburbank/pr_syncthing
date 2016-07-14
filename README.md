@@ -1,7 +1,7 @@
 pr_syncthing
 ============
 
-Script I use for automatically setting up synchting folders for projects.
+Script I use for automatically setting up [Synchting](https://syncthing.net/) folders for projects.
 
 `config.ini` sets the directories to create, as well as the Syncthing URL and API key for the machine. Copy `config.ini.example` as `config.ini` and make appropriate changes.
 
