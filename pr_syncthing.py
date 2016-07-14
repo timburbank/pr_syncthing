@@ -116,9 +116,11 @@ def add_project(args):
 	# create folder (project directory needs to already exist)
 	# if we want it to not have to <http://stackoverflow.com/a/18503387>
 	
-	directorys = ['in', 'out', 'rnd']
+	config_directories = get_config('project', 'directories')
+	better_directories = config_directories.split(',')
+	directories = list(map(str.strip, better_directories))
 	
-	for directory in directorys:
+	for directory in directories:
 	
 		filepath = os.path.join(folder, directory)
 		if not os.path.exists(filepath):
